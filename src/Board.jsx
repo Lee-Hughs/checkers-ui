@@ -233,6 +233,16 @@ class Board extends React.Component {
 
 
     async executeBotMove() {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ board: this.state.board })
+        };
+        let botMoves = [];
+        fetch("http://localhost:5000/checkers", requestOptions)
+            .then(response => response.json())
+            .then(data => botMoves = data);
+        console.log(botMoves);
         console.log("Start sleep");
         await new Promise(r => setTimeout(r, 2000));
         console.log("End sleep");
