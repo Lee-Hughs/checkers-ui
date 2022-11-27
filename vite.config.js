@@ -3,5 +3,14 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()]
+  plugins: [react()],
+  server: {
+    proxy: {
+      "/checkers": {
+        target: "http://127.0.0.1",
+        changeOrigin: true,
+        secure: false
+      },
+    },
+  },
 })

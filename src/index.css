@@ -68,3 +68,43 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.square-1 {
+  height: 75%;
+  width: 75%;
+  background-color: #4d0000;
+  margin: auto;
+  margin-top: 6.5%;
+  border: 2px inset;
+  border-radius: 50%;
+}
+
+.square-2 {
+  height: 75%;
+  width: 75%;
+  background-color: #4d0000;
+  margin: auto;
+  margin-top: 6.5%;
+  border: 2px inset;
+  border-radius: 50%;
+}
+
+.square-3 {
+  height: 75%;
+  width: 75%;
+  background-color: #262626;
+  margin: auto;
+  margin-top: 6.5%;
+  border: 2px inset;
+  border-radius: 50%;
+}
+
+.square-4 {
+  height: 75%;
+  width: 75%;
+  background-color: #262626;
+  margin: auto;
+  margin-top: 6.5%;
+  border: 2px inset;
+  border-radius: 50%;
+}

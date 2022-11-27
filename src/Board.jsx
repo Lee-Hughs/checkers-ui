@@ -28,12 +28,12 @@ class Board extends React.Component {
             highlights: [],
             doubleJumping: false,
             jumping: false,
+            botMoves: [],
         }
     }
 
     handleClick(x, y) {
         console.log([x, y]);
-        console.log(this.state)
         // Is it your turn?
         if(!this.state.yourTurn)
             return;
@@ -224,29 +224,50 @@ class Board extends React.Component {
         if(dst[0] == 0) {
             newBoard[dst[0]][dst[1]] = 4;
         }
-        this.setState({board: newBoard, selectedSquare: null, highlights: [], yourTurn: false, msg: "My Turn!"});
-        this.executeBotMove();
+        this.setState({board: newBoard, selectedSquare: null, highlights: [], yourTurn: false, doubleJumping: false, msg: "My Turn!"});
+        this.executeBotMove(newBoard);
         return;
     }
 
     // Bot related functions
 
-
-    async executeBotMove() {
+    async executeBotMove(newBoard) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ board: this.state.board })
+            body: JSON.stringify({ board: newBoard })
         };
-        let botMoves = [];
-        fetch("http://localhost:5000/checkers", requestOptions)
+        fetch("/checkers", requestOptions)
             .then(response => response.json())
-            .then(data => botMoves = data);
-        console.log(botMoves);
-        console.log("Start sleep");
-        await new Promise(r => setTimeout(r, 2000));
-        console.log("End sleep");
-        this.setState({yourTurn: true, jumping: this.findJump(this.state.board), msg: "Your Turn!"});
+            .then(data => {
+                this.setState(() => ({
+                    botMoves: data["moves"],
+                }),
+                () => this.botMoveHelper());
+            });
+    }
+
+    async botMoveHelper() {
+        console.log("Helper");
+        console.log(this.state);
+		let newBoard = [];
+		for(let index = 0; index < 8; index++) {
+			newBoard.push(this.state.board[index].slice());
+		}
+        for(let index = 0; index < this.state.botMoves.length-1; index++) {
+            let src = this.state.botMoves[index];
+            let dst = this.state.botMoves[index+1];
+            this.setState({selectedSquare: src, highlights: [dst]});
+            newBoard[dst[0]][dst[1]] = newBoard[src[0]][src[1]];
+            newBoard[src[0]][src[1]] = 0;
+            // If you are Jumping
+            if(Math.abs(src[0]-dst[0]) == 2) {
+                newBoard[(dst[0]+src[0])/2][(dst[1]+src[1])/2] = 0;
+            }
+            await new Promise(r => setTimeout(r, 500));
+            this.setState({board: newBoard});
+        }
+        this.setState({yourTurn: true, selectedSquare: null, highlights: [], jumping: this.findJump(newBoard), msg: "Your Turn!",});
     }
 
     renderRow(i) {
@@ -289,7 +310,9 @@ function Row(props) {
             className += " selected";
         }
         squares.push(
-            <div key={`square-${props.rowNumber}-${i}`} onClick={() => props.onClick(props.rowNumber,i)} className={className}>{props.pieces[i]}</div>
+            <div key={`square-${props.rowNumber}-${i}`} onClick={() => props.onClick(props.rowNumber,i)} className={className}>
+                <div className={`square-${props.pieces[i]}`}></div>
+            </div>
         );
     }
     return (
