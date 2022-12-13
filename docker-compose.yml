@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  ui:
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      - checkers
+  api:
+    image: "checkers-bot-api:v1.0.0"
+    ports:
+      - "5000:5000"
+    networks:
+      - checkers
+networks:
+  checkers:

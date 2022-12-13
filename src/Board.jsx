@@ -264,6 +264,10 @@ class Board extends React.Component {
             if(Math.abs(src[0]-dst[0]) == 2) {
                 newBoard[(dst[0]+src[0])/2][(dst[1]+src[1])/2] = 0;
             }
+            // King me
+            if(dst[0] == 7) {
+                newBoard[dst[0]][dst[1]] = 2;
+            }
             await new Promise(r => setTimeout(r, 500));
             this.setState({board: newBoard});
         }

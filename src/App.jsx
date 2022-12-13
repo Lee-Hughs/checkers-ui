@@ -9,9 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      <p>Open</p>
-        <Board />
-      <p>Close</p>
+      <Board />
     </div>
   )
 }
